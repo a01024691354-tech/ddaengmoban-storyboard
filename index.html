@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>땡모반 스타일 스토리보드 생성기</title>
+<style>
+body {
+  background:#0f1220;
+  color:#fff;
+  font-family: Pretendard, sans-serif;
+  margin:0;
+  padding:20px;
+}
+h1 { margin-bottom:10px; }
+.container { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.box {
+  background:#1a1f3c;
+  border-radius:12px;
+  padding:16px;
+}
+textarea, select, button {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:8px;
+}
+textarea { height:120px; }
+button {
+  background:#4b6cff;
+  color:#fff;
+  cursor:pointer;
+  margin-top:12px;
+}
+.scene {
+  background:#11152e;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:10px;
+}
+.prompt {
+  font-size:13px;
+  color:#9bdcff;
+  margin-top:6px;
+}
+</style>
+</head>
+
+<body>
+<h1>🎬 땡모반 스타일 스토리보드 AI</h1>
+<p>대본을 입력하면 장면별 이미지 프롬프트를 자동 생성합니다.</p>
+
+<div class="container">
+  <div class="box">
+    <h3>📜 대본 입력</h3>
+    <textarea id="script"></textarea>
+
+    <h3>🎨 비주얼 스타일</h3>
+    <select id="style">
+      <option>Clay style stop motion</option>
+      <option>Animated movie style</option>
+      <option>Photorealistic cinematic style</option>
+      <option>Isometric mini world diorama style</option>
+    </select>
+
+    <button onclick="generate()">스토리보드 생성</button>
+  </div>
+
+  <div class="box">
+    <h3>🖼️ 생성 결과</h3>
+    <div id="result"></div>
+  </div>
+</div>
+
+<script>
+function generate() {
+  const text = document.getElementById("script").value;
+  const style = document.getElementById("style").value;
+  const scenes = text.split(".").filter(s => s.trim() !== "");
+  const result = document.getElementById("result");
+  result.innerHTML = "";
+
+  scenes.forEach((scene, i) => {
+    const prompt = `
+${style}, storyboard illustration,
+${scene.trim()},
+emotional lighting, cinematic composition,
+clear character action, storytelling frame
+    `.trim();
+
+    result.innerHTML += `
+      <div class="scene">
+        <b>Scene ${i+1}</b>
+        <div>${scene.trim()}</div>
+        <div class="prompt">${prompt}</div>
+      </div>
+    `;
+  });
+}
+</script>
+</body>
+</html>
