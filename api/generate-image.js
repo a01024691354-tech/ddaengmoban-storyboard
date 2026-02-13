@@ -23,7 +23,10 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
-    res.status(200).json({ image: data.data[0].url });
+   const base64Image = data.data[0].b64_json;
+const imageUrl = `data:image/png;base64,${base64Image}`;
+
+res.status(200).json({ image: imageUrl });
   } catch (error) {
     res.status(500).json({ error: "Image generation failed" });
   }
