@@ -73,29 +73,48 @@ button {
 </div>
 
 <script>
-function generate() {
+async function generate() {
   const text = document.getElementById("script").value;
   const style = document.getElementById("style").value;
   const scenes = text.split(".").filter(s => s.trim() !== "");
   const result = document.getElementById("result");
   result.innerHTML = "";
 
-  scenes.forEach((scene, i) => {
+  for (let i = 0; i < scenes.length; i++) {
+
     const prompt = `
 ${style}, storyboard illustration,
-${scene.trim()},
-emotional lighting, cinematic composition,
-clear character action, storytelling frame
+${scenes[i].trim()},
+cinematic lighting, emotional scene,
+detailed, high quality
     `.trim();
 
-    result.innerHTML += `
-      <div class="scene">
-        <b>Scene ${i+1}</b>
-        <div>${scene.trim()}</div>
-        <div class="prompt">${prompt}</div>
-      </div>
-    `;
-  });
+    const sceneDiv = document.createElement("div");
+    sceneDiv.innerHTML = `<h3>Scene ${i + 1}</h3><p>${scenes[i]}</p><p>⏳ 이미지 생성 중...</p>`;
+    result.appendChild(sceneDiv);
+
+    try {
+      const response = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await response.json();
+
+      sceneDiv.innerHTML = `<h3>Scene ${i + 1}</h3><p>${scenes[i]}</p>`;
+
+      const img = document.createElement("img");
+      img.src = data.image;
+      img.style.width = "100%";
+      img.style.marginTop = "10px";
+
+      sceneDiv.appendChild(img);
+
+    } catch (err) {
+      sceneDiv.innerHTML += "<p>❌ 이미지 생성 실패</p>";
+    }
+  }
 }
 </script>
 </body>
